@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Christian Worship Songs Video Player</title>
+
+<style>
+:root{--bg:#0b1220;--card:#0f1724;--accent:#f6c85f;--muted:#9aa4b2;}
+body {
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:linear-gradient(180deg,#031022,#071428);
+  color:white;
+}
+.container {
+  padding:12px;
+  max-width:900px;
+  margin:auto;
+}
+h2 {margin:10px 0;}
+
+.search input{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  background:#0f1a2a;
+  color:white;
+  margin-bottom:15px;
+}
+.grid {
+  display:grid;
+  gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+}
+.video-card {
+  background:rgba(255,255,255,0.04);
+  border-radius:12px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:0.2s;
+}
+.video-card:hover {transform:scale(1.03);}
+.video-card img {width:100%;}
+.video-info{padding:10px;}
+.video-info div{color:var(--muted);font-size:13px}
+
+/* Popup Player */
+#popup {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.8);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+#popup iframe{
+  width:90%;
+  height:60vh;
+  max-width:800px;
+  border:none;
+}
+#close-btn{
+  position:absolute;
+  top:20px;right:20px;
+  font-size:26px;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🎶Christian Worship Songs Video Player</h2>
+
+  <div class="search">
+    <input id="search" placeholder="Search worship song...">
+  </div>
+
+  <div class="grid" id="videos"></div>
+</div>
+
+<!-- Player Popup -->
+<div id="popup">
+  <span id="close-btn">✖</span>
+  <iframe id="player" allowfullscreen></iframe>
+</div>
+
+<script>
+const VIDEOS = [
+  {title:"Amazing Grace - Worship",channel:"Hymns & Worship",id:"CDdvReNKKuk"},
+  {title:"How Great Thou Art",channel:"Christian Songs",id:"sCxi7_hroVw"},
+  {title:"Blessed Assurance",channel:"Worship Hymns",id:"kEezJeoE-8c"},
+  {title:"Yeshu Masih Tu Hai Mahan",channel:"Hindi Worship",id:"LIl7eJ5H9tY"},
+  {title:"Prabhu Tuje Pranam",channel:"Gujarati Worship",id:"zx1JxZj8wZM"},
+  {title:"Way Maker | Sinach",channel:"Worship Live",id:"nai7w1frB1E"},
+];
+
+let filtered = VIDEOS.slice();
+const grid = document.getElementById("videos");
+const popup = document.getElementById("popup");
+const player = document.getElementById("player");
+
+function render(list){
+  grid.innerHTML = "";
+  list.forEach(v=>{
+    grid.innerHTML += `
+      <div class="video-card" onclick="play('${v.id}')">
+        <img src="https://img.youtube.com/vi/${v.id}/hqdefault.jpg">
+        <div class="video-info">
+          <b>${v.title}</b>
+          <div>${v.channel}</div>
+        </div>
+      </div>`;
+  });
+}
+window.play = id => {
+  player.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+  popup.style.display = "flex";
+};
+document.getElementById("close-btn").onclick = ()=>{
+  popup.style.display="none";
+  player.src = ""; // stop
+};
+
+// Search
+document.getElementById("search").oninput = ()=>{
+  const q = search.value.toLowerCase();
+  filtered = VIDEOS.filter(v =>
+    v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q)
+  );
+  render(filtered);
+};
+
+render(filtered);
+</script>
+
+</body>
+</html>
